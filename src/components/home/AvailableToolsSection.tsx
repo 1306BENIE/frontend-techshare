@@ -1,8 +1,11 @@
 import ToolCard from "./ToolCard";
+import SkeletonToolCard from "./SkeletonToolCard";
 import { Link } from "react-router-dom";
 import { Search } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export default function AvailableToolsSection() {
+  const [loading, setLoading] = useState(true);
   const tools = [
     {
       id: 1,
@@ -58,6 +61,11 @@ export default function AvailableToolsSection() {
     },
   ];
 
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <section
       id="tools"
@@ -82,9 +90,11 @@ export default function AvailableToolsSection() {
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {tools.map((tool) => (
-            <ToolCard key={tool.id} tool={tool} />
-          ))}
+          {loading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <SkeletonToolCard key={i} />
+              ))
+            : tools.map((tool) => <ToolCard key={tool.id} tool={tool} />)}
         </div>
       </div>
     </section>
