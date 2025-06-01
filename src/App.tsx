@@ -12,9 +12,9 @@ import Register from "@/pages/auth/Register";
 // Pages privées
 import Dashboard from "@/pages/dashboard/Dashboard";
 import Profile from "@/pages/profile/Profile";
-import AddTool from "@/pages/tool/AddTool";
-import MyBookings from "@/pages/booking/MyBookings";
-import BookingDetail from "@/pages/booking/BookingDetail";
+import AddTool from "@/pages/tools/AddTool";
+import MyBookings from "@/pages/bookings/MyBookings";
+import BookingDetail from "@/pages/bookings/BookingDetail";
 import MyListings from "@/pages/listing/MyListings";
 
 // ProtectedRoute (à créer si pas déjà fait)
