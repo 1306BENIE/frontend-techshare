@@ -32,8 +32,8 @@ function RedirectAfterAuth() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
         <Routes>
           {/* Routes publiques */}
           <Route path="/" element={<Home />} />
@@ -57,7 +57,7 @@ export default function App() {
           {/* Redirection intelligente selon l'état utilisateur */}
           <Route path="*" element={<RedirectAfterAuth />} />
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }

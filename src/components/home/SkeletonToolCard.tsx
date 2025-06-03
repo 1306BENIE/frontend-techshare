@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function SkeletonToolCard() {
   return (
     <div className="animate-pulse bg-gradient-to-br from-white to-gray-100 rounded-2xl p-6 shadow-lg flex flex-col items-center border border-gray-100/60 min-h-[320px]">

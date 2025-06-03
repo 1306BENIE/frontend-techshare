@@ -2,7 +2,7 @@ import { useAuth } from "@/store/AuthContext";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 export default function ProtectedRoute() {
-  const { user, loading } = useAuth();
+  const { user, loading, setRedirectPath } = useAuth();
   const location = useLocation();
 
   if (loading) {
@@ -14,6 +14,8 @@ export default function ProtectedRoute() {
   }
 
   if (!user) {
+    // Sauvegarder l'URL de redirection dans le contexte
+    setRedirectPath(location.pathname);
     return <Navigate to="/auth/login" state={{ from: location }} replace />;
   }
 

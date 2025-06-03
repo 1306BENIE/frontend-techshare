@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Mail, Lock, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import type { LoginFormValues } from "@/interfaces/auth";
 
 const schema = yup.object({
@@ -17,6 +18,7 @@ export default function LoginForm({
 }: {
   onSubmit?: (data: LoginFormValues) => Promise<void>;
 }) {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -30,6 +32,13 @@ export default function LoginForm({
   const onSubmit = async (data: LoginFormValues) => {
     if (onSubmitProp) {
       await onSubmitProp(data);
+      // Récupérer l'URL de redirection
+      const redirectPath =
+        localStorage.getItem("redirectAfterLogin") || "/dashboard";
+      // Supprimer l'URL de redirection
+      localStorage.removeItem("redirectAfterLogin");
+      // Rediriger vers l'URL sauvegardée
+      navigate(redirectPath);
     } else {
       await new Promise((r) => setTimeout(r, 1000));
       reset();
