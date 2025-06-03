@@ -4,6 +4,10 @@
 export interface AddToolFormData {
   /** Nom de l'outil */
   name: string;
+  /** Marque de l'outil */
+  brand: string;
+  /** Modèle de l'outil */
+  model: string;
   /** Description de l'outil */
   description: string;
   /** Prix de location par jour */
@@ -12,12 +16,14 @@ export interface AddToolFormData {
   location: string;
   /** Catégorie de l'outil */
   category: string;
-  /** URL de l'image de l'outil */
-  image: string;
-  /** Statut de l'outil (disponible/indisponible) */
-  status: "available" | "unavailable";
+  /** Images de l'outil */
+  images: File[];
+  /** État de l'outil */
+  etat: string;
   /** Indique si l'outil est assuré */
   isInsured: boolean;
+  /** Dépôt de garantie (caution), en FCFA */
+  caution?: number;
 }
 
 /**
@@ -25,7 +31,7 @@ export interface AddToolFormData {
  */
 export interface AddToolProps {
   /** Fonction appelée lors de la soumission du formulaire */
-  onSubmit: (data: AddToolFormData) => void;
+  onSubmit: (data: FormData) => void;
   /** État de chargement */
   loading?: boolean;
 }

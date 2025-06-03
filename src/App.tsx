@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/store/AuthContext";
 import PrivateLayout from "@/components/layout/PrivateLayout";
+import PublicLayout from "@/components/layout/PublicLayout";
 
 // Pages publiques
 import Home from "@/pages/home/Home";
@@ -8,6 +9,8 @@ import ToolList from "@/pages/tools/ToolsList";
 import ToolDetail from "@/pages/tools/ToolDetail";
 import Login from "@/pages/auth/Login";
 import Register from "@/pages/auth/Register";
+import MyTools from "@/components/features/tools/MyTools";
+import HowItWorks from "@/pages/how-it-works/HowItWorks";
 
 // Pages privées
 import Dashboard from "@/pages/dashboard/Dashboard";
@@ -24,7 +27,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 function RedirectAfterAuth() {
   const { user } = useAuth();
   return user ? (
-    <Navigate to="/dashboard" replace />
+    <Navigate to="/home" replace />
   ) : (
     <Navigate to="/auth/login" replace />
   );
@@ -35,12 +38,19 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          {/* Routes publiques */}
-          <Route path="/" element={<Home />} />
-          <Route path="/tools" element={<ToolList />} />
-          <Route path="/tools/:id" element={<ToolDetail />} />
-          <Route path="/auth/login" element={<Login />} />
-          <Route path="/auth/register" element={<Register />} />
+          {/* Redirection de la racine vers /home */}
+          <Route path="/" element={<Navigate to="/home" replace />} />
+
+          {/* Routes publiques avec layout */}
+          <Route element={<PublicLayout />}>
+            <Route path="/home" element={<Home />} />
+            <Route path="/tools" element={<ToolList />} />
+            <Route path="/tools/:id" element={<ToolDetail />} />
+            <Route path="/my-tools" element={<MyTools />} />
+            <Route path="/auth/login" element={<Login />} />
+            <Route path="/auth/register" element={<Register />} />
+            <Route path="/how-it-works" element={<HowItWorks />} />
+          </Route>
 
           {/* Routes privées protégées par layout global */}
           <Route element={<ProtectedRoute />}>

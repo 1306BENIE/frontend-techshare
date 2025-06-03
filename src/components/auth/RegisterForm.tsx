@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/Button";
 import { Mail, Lock, User, Phone, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
 import type { RegisterFormValues } from "@/interfaces/auth";
+import { useAuth } from "@/store/AuthContext";
+import { useNavigate } from "react-router-dom";
+import React from "react";
 
 const schema = yup.object({
   name: yup.string().required("Le nom est requis"),
@@ -35,11 +38,7 @@ const schema = yup.object({
     .default(false),
 });
 
-export default function RegisterForm({
-  onSubmit: onSubmitProp,
-}: {
-  onSubmit?: (data: RegisterFormValues) => Promise<void>;
-}) {
+export default function RegisterForm() {
   const {
     register,
     handleSubmit,
@@ -49,13 +48,30 @@ export default function RegisterForm({
     mode: "onTouched",
   });
 
+  const { register: registerUser } = useAuth();
+  const navigate = useNavigate();
+  const [registerError, setRegisterError] = React.useState<string | null>(null);
+
   const onSubmit = async (data: RegisterFormValues) => {
-    if (onSubmitProp) {
-      await onSubmitProp(data);
-    } else {
-      // TODO: Appel API d'inscription
-      await new Promise((r) => setTimeout(r, 1200));
-      alert(JSON.stringify(data, null, 2));
+    setRegisterError(null);
+    try {
+      const success = registerUser(data.email, data.password);
+      console.log(
+        "registerUser called with:",
+        data.email,
+        data.password,
+        "=>",
+        success
+      );
+      if (success) {
+        navigate("/auth/login");
+      } else {
+        setRegisterError("Cet email est déjà utilisé.");
+      }
+    } catch {
+      setRegisterError(
+        "Une erreur inattendue est survenue. Veuillez réessayer."
+      );
     }
   };
 
@@ -64,7 +80,9 @@ export default function RegisterForm({
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, type: "spring", bounce: 0.3 }}
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit((data) => {
+        onSubmit(data);
+      })}
       className="w-full max-w-md bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl px-8 py-10 space-y-7"
       autoComplete="off"
     >
@@ -169,16 +187,23 @@ export default function RegisterForm({
           {errors.cgu.message}
         </span>
       )}
-      <Button
-        type="submit"
-        variant="ghost"
-        size="lg"
-        className="mx-auto block mt-2 text-lg font-semibold rounded-2xl shadow-lg transition-all duration-200 hover:scale-[1.03] focus:ring-2 focus:ring-primary/40 bg-gray-100 text-black w-[220px]"
-        isLoading={isSubmitting}
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? "Inscription en cours..." : "S'inscrire"}
-      </Button>
+      <div className="flex justify-center">
+        <Button
+          type="submit"
+          variant="ghost"
+          size="lg"
+          className="mt-2 text-lg font-semibold rounded-2xl shadow-lg transition-all duration-200 hover:scale-[1.03] focus:ring-2 focus:ring-primary/40 bg-gray-100 text-black w-[220px]"
+          isLoading={isSubmitting}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Inscription en cours..." : "S'inscrire"}
+        </Button>
+      </div>
+      {registerError && (
+        <span className="text-danger text-xs block mt-2 text-center">
+          {registerError}
+        </span>
+      )}
       <p className="text-center text-sm text-gray-500">
         Vous avez déjà un compte ?{" "}
         <a

@@ -1,127 +1,84 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
-import { useNavigate } from "react-router-dom";
-import * as authService from "@/services/authService";
-import type {
-  RegisterFormValues,
-  LoginFormValues,
-  User,
-} from "@/interfaces/auth";
+import React, { createContext, useContext, useState, useEffect } from "react";
+
+interface User {
+  email: string;
+  firstName: string;
+  lastName: string;
+}
 
 interface AuthContextType {
+  isAuthenticated: boolean;
   user: User | null;
-  token: string | null;
-  loading: boolean;
-  error: string | null;
-  redirectPath: string | null;
-  login: (data: LoginFormValues) => Promise<void>;
-  register: (data: RegisterFormValues) => Promise<void>;
+  login: (email: string, password: string) => boolean;
+  register: (email: string, password: string) => boolean;
   logout: () => void;
-  setRedirectPath: (path: string | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(
-    localStorage.getItem("token")
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
+    localStorage.getItem("isAuthenticated") === "true"
   );
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [redirectPath, setRedirectPath] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const [user, setUser] = useState<User | null>(
+    JSON.parse(localStorage.getItem("user") || "null")
+  );
 
   useEffect(() => {
-    if (token) {
-      // TODO: récupérer l'utilisateur courant via l'API
-      // fetchCurrentUser(token).then(setUser).catch(() => logout());
+    localStorage.setItem("isAuthenticated", isAuthenticated ? "true" : "false");
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("user");
     }
-  }, [token]);
+  }, [isAuthenticated, user]);
 
-  const login = async (data: LoginFormValues) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await authService.login(data);
-      setToken(res.token);
-      localStorage.setItem("token", res.token);
-      setUser(res.user);
-
-      // Redirection après connexion
-      if (redirectPath) {
-        navigate(redirectPath);
-        setRedirectPath(null);
-      } else {
-        navigate("/dashboard");
-      }
-    } catch (err: any) {
-      setError(err.message);
-      setUser(null);
-      setToken(null);
-      throw err;
-    } finally {
-      setLoading(false);
+  const login = (email: string, password: string) => {
+    const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
+    const found = users.find(
+      (u) => u.email === email && u.password === password
+    );
+    if (found) {
+      setIsAuthenticated(true);
+      setUser(found);
+      return true;
     }
+    return false;
   };
 
-  const register = async (data: RegisterFormValues) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await authService.register(data);
-      setToken(res.token);
-      localStorage.setItem("token", res.token);
-      setUser(res.user);
-      navigate("/dashboard");
-    } catch (err: any) {
-      setError(err.message);
-      setUser(null);
-      setToken(null);
-      throw err;
-    } finally {
-      setLoading(false);
+  const register = (email: string, password: string) => {
+    const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
+    if (users.find((u) => u.email === email)) {
+      return false; // déjà inscrit
     }
+    const newUser = { email, password };
+    users.push(newUser);
+    localStorage.setItem("users", JSON.stringify(users));
+    setIsAuthenticated(true);
+    setUser(newUser);
+    return true;
   };
 
   const logout = () => {
+    setIsAuthenticated(false);
     setUser(null);
-    setToken(null);
-    setError(null);
-    setRedirectPath(null);
-    localStorage.removeItem("token");
-    authService.logout();
-    navigate("/auth/login");
+    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("user");
   };
 
   return (
     <AuthContext.Provider
-      value={{
-        user,
-        token,
-        loading,
-        error,
-        redirectPath,
-        login,
-        register,
-        logout,
-        setRedirectPath,
-      }}
+      value={{ isAuthenticated, user, login, register, logout }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => {
+export function useAuth() {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
+  if (!context) throw new Error("useAuth must be used within an AuthProvider");
   return context;
-};
+}

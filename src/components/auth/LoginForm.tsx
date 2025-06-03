@@ -7,41 +7,38 @@ import { Mail, Lock, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import type { LoginFormValues } from "@/interfaces/auth";
+import { useAuth } from "@/store/AuthContext";
+import React from "react";
 
 const schema = yup.object({
   email: yup.string().email("Email invalide").required("L'email est requis"),
   password: yup.string().required("Le mot de passe est requis"),
 });
 
-export default function LoginForm({
-  onSubmit: onSubmitProp,
-}: {
-  onSubmit?: (data: LoginFormValues) => Promise<void>;
-}) {
+export default function LoginForm() {
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting, isSubmitSuccessful },
-    reset,
   } = useForm<LoginFormValues>({
     resolver: yupResolver(schema),
     mode: "onTouched",
   });
+  const { login } = useAuth();
+  const [authError, setAuthError] = React.useState<string | null>(null);
 
   const onSubmit = async (data: LoginFormValues) => {
-    if (onSubmitProp) {
-      await onSubmitProp(data);
+    setAuthError(null);
+    const success = login(data.email, data.password);
+    if (success) {
       // Récupérer l'URL de redirection
       const redirectPath =
-        localStorage.getItem("redirectAfterLogin") || "/dashboard";
-      // Supprimer l'URL de redirection
+        localStorage.getItem("redirectAfterLogin") || "/home";
       localStorage.removeItem("redirectAfterLogin");
-      // Rediriger vers l'URL sauvegardée
       navigate(redirectPath);
     } else {
-      await new Promise((r) => setTimeout(r, 1000));
-      reset();
+      setAuthError("Email ou mot de passe incorrect");
     }
   };
 
@@ -105,24 +102,26 @@ export default function LoginForm({
           />
         </div>
       </div>
-      <Button
-        type="submit"
-        variant="ghost"
-        size="lg"
-        className="mx-auto block mt-2 text-lg font-semibold rounded-2xl shadow-lg transition-all duration-200 hover:scale-[1.03] focus:ring-2 focus:ring-primary/40 bg-gray-100 text-black w-[220px]"
-        isLoading={isSubmitting}
-        rightIcon={
-          isSubmitSuccessful ? (
-            <CheckCircle2 className="ml-2 w-5 h-5 text-green-500" />
-          ) : undefined
-        }
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? "Connexion en cours..." : "Se connecter"}
-      </Button>
-      {isSubmitSuccessful && (
-        <div className="flex items-center justify-center gap-2 text-green-600 font-medium mt-2 animate-fade-in">
-          <CheckCircle2 className="w-5 h-5" /> Connexion réussie !
+      <div className="flex justify-center">
+        <Button
+          type="submit"
+          variant="ghost"
+          size="lg"
+          className="mt-2 text-lg font-semibold rounded-2xl shadow-lg transition-all duration-200 hover:scale-[1.03] focus:ring-2 focus:ring-primary/40 bg-gray-100 text-black w-[220px]"
+          isLoading={isSubmitting}
+          rightIcon={
+            isSubmitSuccessful ? (
+              <CheckCircle2 className="ml-2 w-5 h-5 text-green-500" />
+            ) : undefined
+          }
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Connexion en cours..." : "Se connecter"}
+        </Button>
+      </div>
+      {authError && (
+        <div className="text-red-600 text-center mt-2 animate-fade-in">
+          {authError}
         </div>
       )}
       <div className="flex flex-col items-center gap-2 mt-4">

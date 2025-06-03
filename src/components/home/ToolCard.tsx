@@ -4,16 +4,15 @@ import { motion } from "framer-motion";
 import type { Tool } from "@/interfaces/tools/tool";
 import { useState } from "react";
 
+interface ToolCardProps {
+  tool: Tool;
+  index?: number;
+}
+
 const shimmer =
   "before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent";
 
-export default function ToolCard({
-  tool,
-  index = 0,
-}: {
-  tool: Tool;
-  index?: number;
-}) {
+export default function ToolCard({ tool, index = 0 }: ToolCardProps) {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -27,7 +26,7 @@ export default function ToolCard({
         type: "spring",
         bounce: 0.2,
       }}
-      className="h-full max-w-sm sm:max-w-[400px] mx-auto"
+      className="h-full max-w-[400px] mx-auto"
     >
       <Link
         to={`/tools/${tool.id}`}

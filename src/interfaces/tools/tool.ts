@@ -17,6 +17,10 @@ export interface Tool {
   id: number;
   /** Nom de l'outil */
   name: string;
+  /** Marque de l'outil */
+  brand: string;
+  /** Modèle de l'outil */
+  model: string;
   /** Description détaillée de l'outil */
   description: string;
   /** Prix de location formaté (ex: "15,000 FCFA") */
@@ -27,8 +31,12 @@ export interface Tool {
   location: string;
   /** Statut de disponibilité ("available" | "unavailable") */
   status: string;
-  /** URL de l'image de l'outil */
+  /** URL de l'image principale de l'outil */
   image: string;
+  /** Liste des URLs des images de l'outil */
+  images: string[];
+  /** État de l'outil */
+  etat: string;
 
   // Champs optionnels
   /** Indique si l'outil est nouveau */
@@ -45,4 +53,6 @@ export interface Tool {
   rentalCount?: number;
   /** Indique si l'outil est assuré */
   isInsured?: boolean;
+  /** Dépôt de garantie (caution), en FCFA */
+  caution?: number;
 }

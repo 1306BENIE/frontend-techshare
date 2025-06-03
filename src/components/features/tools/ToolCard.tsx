@@ -1,9 +1,14 @@
 import { motion } from "framer-motion";
 import { Star, MapPin, DollarSign } from "lucide-react";
 import { Link } from "react-router-dom";
-import type { ToolCardProps } from "@/interfaces/tools/tools";
+import type { Tool } from "@/interfaces/tools/tool";
 
-export default function ToolCard({ tool, index }: ToolCardProps) {
+interface ToolCardProps {
+  tool: Tool;
+  index?: number;
+}
+
+export default function ToolCard({ tool, index = 0 }: ToolCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -36,10 +41,14 @@ export default function ToolCard({ tool, index }: ToolCardProps) {
             <h3 className="text-lg font-semibold text-gray-900 group-hover:text-cyan-600 transition-colors">
               {tool.name}
             </h3>
-            <div className="flex items-center gap-1 text-amber-500">
-              <Star className="w-4 h-4 fill-current" />
-              <span className="text-sm font-medium">{tool.rating}</span>
-            </div>
+            {tool.rating && (
+              <div className="flex items-center gap-1 text-amber-500">
+                <Star className="w-4 h-4 fill-current" />
+                <span className="text-sm font-medium">
+                  {tool.rating.toFixed(1)}
+                </span>
+              </div>
+            )}
           </div>
           <p className="mt-1 text-gray-600 text-sm line-clamp-2">
             {tool.description}

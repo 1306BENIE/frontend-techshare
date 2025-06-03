@@ -11,6 +11,7 @@ interface ButtonProps {
   className?: string;
   icon?: ReactNode;
   fullWidth?: boolean;
+  type?: "button" | "submit";
 }
 
 export default function Button({
@@ -22,6 +23,7 @@ export default function Button({
   className = "",
   icon,
   fullWidth = false,
+  type = "button",
 }: ButtonProps) {
   const baseStyles =
     "inline-flex items-center justify-center gap-2 font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-xl";
@@ -64,8 +66,11 @@ export default function Button({
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className={buttonClasses}
-      onClick={onClick}
-      type="button"
+      onClick={() => {
+        console.log("Button clicked");
+        onClick && onClick();
+      }}
+      type={type}
     >
       {buttonContent}
     </motion.button>
