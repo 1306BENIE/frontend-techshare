@@ -1,7 +1,14 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Footer() {
+  const location = useLocation();
+  if (
+    location.pathname.startsWith("/tools/add") ||
+    location.pathname.startsWith("/tools/edit")
+  ) {
+    return null;
+  }
+
   return (
     <footer className="relative bg-gradient-to-b from-white via-gray-50/50 to-gray-100/70 overflow-hidden">
       {/* Effet de particules */}

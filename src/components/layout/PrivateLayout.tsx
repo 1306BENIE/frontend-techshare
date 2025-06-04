@@ -11,8 +11,10 @@ export default function PrivateLayout() {
     navigate("/auth/login");
   };
 
-  // Masquer la navbar sur /tools/add et ses sous-routes
-  const hideHeader = location.pathname.startsWith("/tools/add");
+  // Masquer la navbar sur /tools/add et /tools/edit et leurs sous-routes
+  const hideHeader =
+    location.pathname.startsWith("/tools/add") ||
+    location.pathname.startsWith("/tools/edit");
 
   return (
     <div className="min-h-screen flex flex-col bg-light">

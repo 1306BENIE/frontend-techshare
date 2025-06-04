@@ -19,6 +19,7 @@ import AddTool from "@/pages/tools/AddTool";
 import MyBookings from "@/pages/bookings/MyBookings";
 import BookingDetail from "@/pages/bookings/BookingDetail";
 import MyListings from "@/pages/listing/MyListings";
+import EditTool from "@/pages/tools/EditTool";
 
 // ProtectedRoute (à créer si pas déjà fait)
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -58,6 +59,7 @@ export default function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/tools/add" element={<AddTool />} />
+              <Route path="/tools/edit/:id" element={<EditTool />} />
               <Route path="/my-bookings" element={<MyBookings />} />
               <Route path="/my-listings" element={<MyListings />} />
               <Route path="/bookings/:id" element={<BookingDetail />} />

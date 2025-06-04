@@ -40,7 +40,10 @@ export default function Navbar() {
     };
   }, []);
 
-  if (location.pathname.startsWith("/tools/add")) {
+  if (
+    location.pathname.startsWith("/tools/add") ||
+    location.pathname.startsWith("/tools/edit")
+  ) {
     return null;
   }
 

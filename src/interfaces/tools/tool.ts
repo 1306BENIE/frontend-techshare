@@ -6,6 +6,8 @@ export interface Owner {
   name: string;
   /** URL de l'avatar du propriétaire */
   avatar: string;
+  /** Email du propriétaire */
+  email?: string;
 }
 
 /**
