@@ -4,6 +4,7 @@ import { useAuth } from "@/store/AuthContext";
 import { Booking, BookingStatus, PaymentStatus } from "@/interfaces/Booking";
 import BookingList from "@/components/bookings/BookingList";
 import { BookingDetails } from "@/components/bookings/BookingDetails";
+import { ReceivedBookings } from "@/components/bookings/ReceivedBookings";
 import { Button } from "@/components/ui/Button/Button";
 import {
   Calendar,
@@ -12,7 +13,6 @@ import {
   Search,
   ArrowUpDown,
   Banknote,
-  Clock,
   CheckCircle2,
   ChevronDown,
 } from "lucide-react";
@@ -20,6 +20,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 type SortField = "date" | "price" | "status";
 type SortOrder = "asc" | "desc";
+type BookingTab = "sent" | "received";
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -42,6 +43,7 @@ export default function BookingsPage() {
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<BookingTab>("sent");
 
   const loadBookings = useCallback(async () => {
     if (user) {
@@ -294,133 +296,50 @@ export default function BookingsPage() {
           </div>
         </motion.div>
 
-        {/* Statistiques */}
-        <motion.div
-          initial="initial"
-          animate="animate"
-          variants={fadeIn}
-          className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8"
-        >
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-200"
+        {/* Onglets */}
+        <div className="flex gap-4 mb-6">
+          <Button
+            variant={activeTab === "sent" ? "primary" : "ghost"}
+            onClick={() => setActiveTab("sent")}
+            className="flex-1 md:flex-none"
           >
-            <div className="flex items-center gap-3 mb-4">
-              <div className="bg-primary/10 p-3 rounded-xl">
-                <Calendar className="w-6 h-6 text-primary" />
-              </div>
-              <h3 className="font-medium text-gray-900">Total Réservations</h3>
-            </div>
-            <p className="text-3xl font-bold text-gray-900">{stats.total}</p>
-          </motion.div>
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-200"
+            Réservations envoyées
+          </Button>
+          <Button
+            variant={activeTab === "received" ? "primary" : "ghost"}
+            onClick={() => setActiveTab("received")}
+            className="flex-1 md:flex-none"
           >
-            <div className="flex items-center gap-3 mb-4">
-              <div className="bg-primary/10 p-3 rounded-xl">
-                <Banknote className="w-6 h-6 text-primary" />
-              </div>
-              <h3 className="font-medium text-gray-900">Valeur Totale</h3>
-            </div>
-            <p className="text-3xl font-bold text-gray-900">
-              {stats.totalValue.toLocaleString("fr-FR")} FCFA
-            </p>
-          </motion.div>
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-200"
-          >
-            <div className="flex items-center gap-3 mb-4">
-              <div className="bg-primary/10 p-3 rounded-xl">
-                <CheckCircle2 className="w-6 h-6 text-primary" />
-              </div>
-              <h3 className="font-medium text-gray-900">Confirmées</h3>
-            </div>
-            <p className="text-3xl font-bold text-gray-900">
-              {stats.byStatus.CONFIRMED || 0}
-            </p>
-          </motion.div>
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-200"
-          >
-            <div className="flex items-center gap-3 mb-4">
-              <div className="bg-primary/10 p-3 rounded-xl">
-                <Clock className="w-6 h-6 text-primary" />
-              </div>
-              <h3 className="font-medium text-gray-900">En attente</h3>
-            </div>
-            <p className="text-3xl font-bold text-gray-900">
-              {stats.byStatus.PENDING || 0}
-            </p>
-          </motion.div>
-        </motion.div>
+            Réservations reçues
+          </Button>
+        </div>
 
-        {/* Liste des réservations et détails */}
-        {isInitialLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="flex flex-col items-center gap-4">
-              <Loader2 className="w-8 h-8 animate-spin text-primary" />
-              <p className="text-gray-500">Chargement des réservations...</p>
-            </div>
-          </div>
-        ) : (
-          <motion.div
-            initial="initial"
-            animate="animate"
-            variants={fadeIn}
-            className="grid grid-cols-1 lg:grid-cols-3 gap-8"
-          >
-            <div className="lg:col-span-2">
+        {/* Contenu des onglets */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            {activeTab === "sent" ? (
               <BookingList
                 bookings={sortedBookings}
                 onBookingSelect={handleBookingSelect}
                 selectedBookingId={selectedBooking?.id}
               />
-            </div>
-            <div className="lg:col-span-1">
-              <AnimatePresence mode="wait">
-                {selectedBooking ? (
-                  <motion.div
-                    key="details"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <BookingDetails
-                      booking={selectedBooking}
-                      onClose={() => setSelectedBooking(null)}
-                      onUpdate={(updatedBooking: Booking) => {
-                        setSelectedBooking(updatedBooking);
-                        loadBookings();
-                      }}
-                    />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="empty"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-8 text-center border border-gray-100"
-                  >
-                    <div className="bg-gray-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                      <Calendar className="w-10 h-10 text-gray-400" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                      Aucune réservation sélectionnée
-                    </h3>
-                    <p className="text-gray-500">
-                      Sélectionnez une réservation pour voir les détails
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </motion.div>
-        )}
+            ) : (
+              <ReceivedBookings userId={user?.email || ""} />
+            )}
+          </div>
+          <div className="lg:col-span-1">
+            {selectedBooking && (
+              <BookingDetails
+                booking={selectedBooking}
+                onClose={() => setSelectedBooking(null)}
+                onUpdate={(updatedBooking) => {
+                  setSelectedBooking(updatedBooking);
+                  loadBookings();
+                }}
+              />
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -45,9 +45,16 @@ class BookingService {
     return this.bookings.find((booking) => booking.id === id);
   }
 
-  async getUserBookings(email: string): Promise<Booking[]> {
+  async getUserBookings(userId: string): Promise<Booking[]> {
     await this.delay(500);
-    return this.bookings.filter((booking) => booking.userId === email);
+    return this.bookings.filter((booking) => booking.userId === userId);
+  }
+
+  async getReceivedBookings(userId: string): Promise<Booking[]> {
+    await this.delay(500);
+    // Dans un cas réel, nous devrions vérifier si l'utilisateur est le propriétaire de l'outil
+    // Pour l'instant, nous simulons en retournant les réservations qui ne sont pas de l'utilisateur
+    return this.bookings.filter((booking) => booking.userId !== userId);
   }
 
   async updateBooking(
@@ -70,10 +77,29 @@ class BookingService {
     return updatedBooking;
   }
 
+  async confirmBooking(id: string): Promise<Booking | undefined> {
+    return this.updateBooking(id, {
+      status: BookingStatus.CONFIRMED,
+    });
+  }
+
+  async rejectBooking(id: string): Promise<Booking | undefined> {
+    return this.updateBooking(id, {
+      status: BookingStatus.CANCELLED,
+      paymentStatus: PaymentStatus.REFUNDED,
+    });
+  }
+
   async cancelBooking(id: string): Promise<Booking | undefined> {
     return this.updateBooking(id, {
       status: BookingStatus.CANCELLED,
       paymentStatus: PaymentStatus.REFUNDED,
+    });
+  }
+
+  async completeBooking(id: string): Promise<Booking | undefined> {
+    return this.updateBooking(id, {
+      status: BookingStatus.COMPLETED,
     });
   }
 
