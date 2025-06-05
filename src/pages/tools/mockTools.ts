@@ -4,6 +4,8 @@ export const mockTools: Tool[] = [
   {
     id: 1,
     name: "MacBook Pro M1",
+    brand: "Apple",
+    model: "M1 2021",
     description: "Puissant ordinateur portable pour les professionnels.",
     price: "15,000 FCFA",
     priceValue: 15000,
@@ -11,6 +13,10 @@ export const mockTools: Tool[] = [
     status: "available",
     image:
       "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80",
+    ],
+    etat: "Comme neuf",
     isNew: true,
     category: "Ordinateur",
     rating: 4.8,
@@ -25,6 +31,8 @@ export const mockTools: Tool[] = [
   {
     id: 2,
     name: "iPad Pro",
+    brand: "Apple",
+    model: "Pro 2022",
     description: "Tablette polyvalente pour la créativité.",
     price: "10,000 FCFA",
     priceValue: 10000,
@@ -32,6 +40,10 @@ export const mockTools: Tool[] = [
     status: "available",
     image:
       "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=400&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=400&q=80",
+    ],
+    etat: "Excellent",
     isNew: true,
     category: "Tablette",
     rating: 4.6,
@@ -46,6 +58,8 @@ export const mockTools: Tool[] = [
   {
     id: 3,
     name: "DJI Mavic Air 2",
+    brand: "DJI",
+    model: "Mavic Air 2",
     description: "Drone compact pour la photographie aérienne.",
     price: "25,000 FCFA",
     priceValue: 25000,
@@ -53,6 +67,10 @@ export const mockTools: Tool[] = [
     status: "available",
     image:
       "https://images.unsplash.com/photo-1507582020474-9a35b7d455d9?auto=format&fit=crop&w=400&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1507582020474-9a35b7d455d9?auto=format&fit=crop&w=400&q=80",
+    ],
+    etat: "Très bon état",
     category: "Drone",
     rating: 4.9,
     reviewsCount: 41,
@@ -66,6 +84,8 @@ export const mockTools: Tool[] = [
   {
     id: 4,
     name: "Sony Alpha A6400",
+    brand: "Sony",
+    model: "A6400",
     description: "Appareil photo hybride pour la photo et la vidéo 4K.",
     price: "20,000 FCFA",
     priceValue: 20000,
@@ -73,6 +93,10 @@ export const mockTools: Tool[] = [
     status: "available",
     image:
       "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=400&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=400&q=80",
+    ],
+    etat: "Bon état",
     category: "Appareil photo",
     rating: 4.7,
     reviewsCount: 25,

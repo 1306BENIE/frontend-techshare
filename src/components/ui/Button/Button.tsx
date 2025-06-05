@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, HTMLMotionProps } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import React from "react";
 import clsx from "clsx";
@@ -8,11 +8,11 @@ export type ButtonVariant =
   | "secondary"
   | "accent"
   | "danger"
-  | "ghost";
+  | "ghost"
+  | "outline";
 export type ButtonSize = "sm" | "md" | "lg";
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends HTMLMotionProps<"button"> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   fullWidth?: boolean;
@@ -31,6 +31,8 @@ const variantClasses: Record<ButtonVariant, string> = {
   danger: "bg-danger text-white hover:bg-danger/80 focus:ring-danger",
   ghost:
     "bg-transparent text-primary border border-primary hover:bg-primary/10",
+  outline:
+    "bg-transparent text-primary border border-primary hover:bg-primary/5",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -85,3 +87,5 @@ export const Button: React.FC<ButtonProps> = ({
     </motion.button>
   );
 };
+
+export { variantClasses as buttonVariants };

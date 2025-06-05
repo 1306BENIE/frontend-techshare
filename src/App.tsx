@@ -1,38 +1,24 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "@/store/AuthContext";
-import PrivateLayout from "@/components/layout/PrivateLayout";
+import { AuthProvider } from "@/store/AuthContext";
 import PublicLayout from "@/components/layout/PublicLayout";
-
-// Pages publiques
+import PrivateLayout from "@/components/layout/PrivateLayout";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import RedirectAfterAuth from "@/components/RedirectAfterAuth";
 import Home from "@/pages/home/Home";
 import ToolList from "@/pages/tools/ToolsList";
 import ToolDetail from "@/pages/tools/ToolDetail";
+import MyTools from "@/pages/tools/MyTools";
 import Login from "@/pages/auth/Login";
 import Register from "@/pages/auth/Register";
-import MyTools from "@/components/features/tools/MyTools";
 import HowItWorks from "@/pages/how-it-works/HowItWorks";
-
-// Pages privées
 import Dashboard from "@/pages/dashboard/Dashboard";
 import Profile from "@/pages/profile/Profile";
 import AddTool from "@/pages/tools/AddTool";
-import MyBookings from "@/pages/bookings/MyBookings";
-import BookingDetail from "@/pages/bookings/BookingDetail";
-import MyListings from "@/pages/listing/MyListings";
 import EditTool from "@/pages/tools/EditTool";
-
-// ProtectedRoute (à créer si pas déjà fait)
-import ProtectedRoute from "@/components/ProtectedRoute";
-
-// Redirection intelligente après login/register
-function RedirectAfterAuth() {
-  const { user } = useAuth();
-  return user ? (
-    <Navigate to="/home" replace />
-  ) : (
-    <Navigate to="/auth/login" replace />
-  );
-}
+import BookingsPage from "@/pages/BookingsPage";
+import MyListings from "@/pages/listing/MyListings";
+import BookingDetail from "@/pages/bookings/BookingDetail";
+import BookTool from "@/pages/tools/BookTool";
 
 export default function App() {
   return (
@@ -60,7 +46,8 @@ export default function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/tools/add" element={<AddTool />} />
               <Route path="/tools/edit/:id" element={<EditTool />} />
-              <Route path="/my-bookings" element={<MyBookings />} />
+              <Route path="/tools/:id/book" element={<BookTool />} />
+              <Route path="/my-bookings" element={<BookingsPage />} />
               <Route path="/my-listings" element={<MyListings />} />
               <Route path="/bookings/:id" element={<BookingDetail />} />
             </Route>

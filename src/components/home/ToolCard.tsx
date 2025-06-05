@@ -1,8 +1,10 @@
 import { MapPin, Star, ShieldCheck, Heart } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import type { Tool } from "@/interfaces/tools/tool";
 import { useState } from "react";
+import { useAuth } from "@/store/AuthContext";
+import { toast } from "react-hot-toast";
 
 interface ToolCardProps {
   tool: Tool;
@@ -15,6 +17,18 @@ const shimmer =
 export default function ToolCard({ tool, index = 0 }: ToolCardProps) {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleReserve = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!user) {
+      toast.error("Vous devez être connecté pour réserver un outil");
+      navigate("/login");
+      return;
+    }
+    navigate(`/tools/${tool.id}/book`);
+  };
 
   return (
     <motion.div
@@ -75,11 +89,7 @@ export default function ToolCard({ tool, index = 0 }: ToolCardProps) {
               {tool.status === "available" && (
                 <button
                   className="bg-cyan-500/95 text-white font-semibold px-6 py-2.5 rounded-xl shadow-lg hover:bg-cyan-500 transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 will-change-transform"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    // TODO: Ouvrir le modal de réservation
-                    console.log("Ouvrir modal de réservation pour", tool.id);
-                  }}
+                  onClick={handleReserve}
                   aria-label="Réserver cet outil"
                 >
                   Réserver

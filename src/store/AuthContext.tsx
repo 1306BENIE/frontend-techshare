@@ -4,6 +4,7 @@ interface User {
   email: string;
   firstName: string;
   lastName: string;
+  password: string;
 }
 
 interface AuthContextType {
@@ -53,7 +54,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     if (users.find((u) => u.email === email)) {
       return false; // déjà inscrit
     }
-    const newUser = { email, password };
+    const newUser: User = {
+      email,
+      password,
+      firstName: "",
+      lastName: "",
+    };
     users.push(newUser);
     localStorage.setItem("users", JSON.stringify(users));
     setIsAuthenticated(true);

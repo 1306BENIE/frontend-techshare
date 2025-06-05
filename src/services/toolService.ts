@@ -1,4 +1,3 @@
-import type { AddToolFormData } from "@/interfaces/tools/add-tool";
 import type { Tool } from "@/interfaces/tools/tool";
 
 /**
